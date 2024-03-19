@@ -1,0 +1,146 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #FFFFFF;
+}
+
+
+
+.input-group {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.has-search .form-control {
+    border: 1px solid #d2ccc4;
+    display: inline;
+    padding: 5px;
+    border-radius: 5px;
+    width: 80%;
+}
+
+.has-search .form-control-feedback {
+    right: 0;
+    float: right;
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+    margin-right: 13%;
+
+}
+
+.login, .logout {
+    display: inline;
+    float: right;
+    margin-top: 30px;
+    margin-right: 25%;
+    vertical-align: middle;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: black !important;
+}
+
+.login:hover , .logout:hover {
+    color: #F0A851 !important;
+}
+
+/* @media all and (max-width: 768px) {
+    .has-search {
+        display: none;
+    }
+
+    .input-group-text {
+        display: none !important;
+    }
+
+    .logo-banner {
+        height: 100px;
+        display: block;
+    }
+
+    .login {
+        font-size: 15px;
+    }
+} */
+
+/* .tab-nav {
+    background-color: #222222;
+    color: white;
+    text-align: center;
+    min-width: max-content;
+    float: right;
+    border-radius: 50px;
+    margin-right: 5%;
+} */
+
+.link-tab {
+    color: white !important;
+    font-weight: bold;
+}
+
+.item {
+    padding: 10px;
+    border-radius: 50px;
+}
+
+.item:hover {
+    background-color: #F0A851;
+}
+
+/* .view {
+    background-color: #b2aeab;
+    display: flex;
+    height: 500px;
+    font-size: 60px;
+    align-items: center;
+    text-align: center;
+    color: #7d7b79;
+} */
+.tab-link-select {
+    color: black;
+}
+
+.image-poster {
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: 300px;
+    object-fit: none;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+
+.middle {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.poster:hover .image-poster {
+    opacity: 0.6;
+}
+
+.poster:hover .middle {
+    opacity: 1;
+}
+
+.seat{
+    width: 100%;
+}
+
+.column{
+    width: 6.6666%;
+    display: inline;
+}

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+    <!-- Font Awesome CSS -->
+    <title>HAY Cinema | Xem phim thả ga không lo deadline</title>
+    <link rel="icon" href="https://www.3playmedia.com/wp-content/uploads/4-16.png" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../home.css">
+    <style>
+        .poster {
+            height: 300px;
+            width: 100%;
+        }
+
+        .poster img {
+            width: 100%;
+            height: 100%;
+        }
+
+        #list>.col-4 {
+            text-align: center;
+            width: 500px;
+            height: 300px;
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- banner -->
+    <div class="container-fluid banner">
+        <div class="row">
+            <div class="col-md-4 col-sm-3 col-3">
+                <picture>
+                    <source media="(max-width: 768px)" srcset="images/banner1.jpg">
+                    <img class="logo-banner" src="../images/banner2.jpg" alt="Banner Hay cinema" width="100%"
+                        height="100%" onclick="window.location.href = '../home.html'">
+                </picture>
+            </div>
+
+            <div class="input-group col-md-5 col-sm-5 col-3" style="display: inline;">
+                <div class="form-group has-search">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input type="text" class="form-control" id="Find_Movie" placeholder="Tìm tên phim, diễn viên...">
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-4 col-5">
+                <a href="../Login/login.html" class="login d-none" id="login">
+                    <i class="bi bi-person-add" style="font-size: 22px;"></i>
+                    <p style="display: inline;">Đăng nhập</p>
+                </a>
+
+                <a href="../php/Roles/logout.php" id="logout" class="d-none logout">
+                    <i class="bi bi-door-closed-fill" style="font-size: 22px;text-align: right;"></i>
+                    <p style="display: inline;">Đăng xuất</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-end">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item item">
+                    <a class="nav-link link-tab" href="#">MUA VÉ</a>
+                </li>
+
+                <li class="nav-item dropdown item">
+                    <a class="nav-link dropdown-toggle link-tab" data-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">PHIM</a>
+                    <div class="dropdown-menu bg-dark">
+                        <a class="dropdown-item link-tab" href="#">Action</a>
+                        <a class="dropdown-item link-tab" href="#">Another action</a>
+                        <a class="dropdown-item link-tab" href="#">Something else here</a>
+                        <div class="dropdown-divider link-tab"></div>
+                        <a class="dropdown-item link-tab" href="#">Separated link</a>
+                    </div>
+                </li>
+
+                <li class="nav-item item">
+                    <a class="nav-link link-tab" href="#">GÓC ĐIỆN ẢNH</a>
+                </li>
+
+                <li class="nav-item item">
+                    <a class="nav-link link-tab" href="#">SỰ KIÊN</a>
+                </li>
+
+                <li class="nav-item item">
+                    <a class="nav-link link-tab" href="#">RẠP/GIÁ VÉ</a>
+                </li>
+
+                <li class="nav-item item">
+                    <a class="nav-link link-tab" href="#">HỖ TRỢ</a>
+                </li>
+
+                <li class="nav-item item">
+                    <a class="nav-link link-tab" href="../php/User/Thong_tin_ca_nhan.php">THÀNH VIÊN</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="text-center mt-xl-5" id="not_Found">
+        <h1 class="text-center">OOPS! KHÔNG TÌM THẤY PHIM </h1>
+        <img class="col-4" src="../images/search.png" alt="Image search" width="50%">
+    </div>
+
+    <div class="container-fluid">
+        <div class="row mt-xl-5" id="list">
+
+        </div>
+    </div>
+
+
+
+    <script>
+        var str = "none";
+        if (window.location.href.includes("infor=")) {
+            str = window.location.href.substring(window.location.href.lastIndexOf("infor=") + 6);
+        }
+
+        function loadItems(list) {
+            const ls = JSON.parse(list);
+            let num_post = ls.length;
+            var parent = document.getElementById("list");
+            for (let i = 0; i < num_post; i++) {
+                let col_4 = document.createElement("div");
+                col_4.className = "col-4";
+                parent.appendChild(col_4);
+                let poster = document.createElement("div");
+                poster.className = "poster";
+                col_4.appendChild(poster);
+                let h5 = document.createElement("h5");
+                h5.className = "mt-2";
+                h5.innerText = ls[i][2];
+                col_4.appendChild(h5);
+                let img = document.createElement("img");
+                img.className = "image-poster";
+                img.src = ls[i][10]; // ../fileUpload
+                poster.appendChild(img);
+                let middle = document.createElement("div");
+                middle.className = "middle";
+                poster.appendChild(middle);
+                let button = document.createElement("button");
+                button.className = "btn btn-warning border";
+                button.innerText = "Xem thêm";
+                button.addEventListener("click", function (event) {
+                    window.location.href = "../php/Movie/Detail_movie.php?id_movie=" + ls[i][1];
+                });
+                middle.appendChild(button);
+            }
+        }
+        $.ajax({
+            url: "../php/Movie/FindMovie.php",
+            type: "POST",
+            data: { name: str },
+            success: function (data) {
+                if (str == "none") {
+                    $("#not_Found").show();
+                    $("#list").hide();
+                    document.querySelector("#not_Found > h1").innerText = 'Mời bạn nhập tên phim để tìm kiếm';
+                } else {
+                    if (data == "Not Found!") {
+                        $("#not_Found").show();
+                        $("#list").hide();
+                        document.querySelector("#not_Found > h1").innerText = 'Không tìm thấy phim "' + str + '"';
+                    } else {
+                        $("#not_Found").hide();
+                        $("#list").show();
+                        loadItems(data);
+                    }
+                }
+            }
+        });
+        $.ajax({
+            url: "../php/Roles/Status_Roles.php",
+            type: "GET",
+            success: function (response) {
+                if (response === "None") {
+                    document.getElementById("login").classList.remove("d-none");
+                    if (!document.getElementById("logout").classList.contains("d-none")) {
+                        document.getElementById("logout").classList.add("d-none");
+                    }
+                } else {
+                    if (!document.getElementById("login").classList.contains("d-none")) {
+                        document.getElementById("login").classList.add("d-none");
+                    }
+                    document.getElementById("logout").classList.remove("d-none");
+                }
+            }
+        });
+        $(document).ready(function () {
+            $("#Find_Movie").keyup(function (e) {
+                if (e.key == "Enter" || e.keyCode == 13) {
+                    if ($("#Find_Movie").val() == "") {
+                        alert("Please Fill name of films you want to search");
+                    }
+                    else {
+                        while (document.getElementById("list").children.length > 0) {
+                            document.getElementById("list").removeChild(document.getElementById("list").lastElementChild);
+                        }
+                        $.ajax({
+                            url: "../php/Movie/FindMovie.php",
+                            type: "POST",
+                            data: { name: $("#Find_Movie").val() },
+                            success: function (data) {
+                                if (data == "Not Found!") {
+                                    $("#not_Found").show();
+                                    $("#list").hide();
+                                    document.querySelector("#not_Found > h1").innerText = 'Không tìm thấy phim "' + $("#Find_Movie").val() + '"';
+                                } else {
+                                    $("#not_Found").hide();
+                                    $("#list").show();
+                                    loadItems(data);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+    <footer class="flex-shrink-0 py-2 bg-dark text-white mt-xl-5">
+        <div class="container-fluid text-center">
+            <div class="row">
+                <div class="col-3">
+                    <h5>GIỚI THIỆU</h5>
+                </div>
+                <div class="col-3">
+                    <h5>GÓC ĐIỆN ẢNH</h5>
+                </div>
+                <div class="col-3">
+                    <h5>HỖ TRỢ</h5>
+                </div>
+                <div class="col-3">
+                    <h5>KẾT NỐI VỚI HAY CINEMA</h5>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

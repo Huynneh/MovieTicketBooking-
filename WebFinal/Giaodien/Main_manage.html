@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Cinema</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <script type="module">
+        $.ajax({
+            url: "../php/Roles/Status_Roles.php",
+            type: "GET",
+            success: function (response) {
+                if (response != "admin") {
+                    window.location.href = "AccessDined.html";
+                }
+            }
+        });
+    </script>
+    <div>
+        <div class="row m-4">
+            <div class="col-4">
+                <img src="../images/Logo.jpg" alt="logo" width="90%">
+            </div>
+            <div class="col-6 m-auto">
+                <h1 class="m-xl-3">Chức năng quản lý của Admin</h1>
+            </div>
+            <div class="col-2 m-auto">
+                <div class="btn-group">
+                    <a href="../php/Roles/logout.php" type="button" class="btn rounded-0 ">
+                        <button class="btn btn-warning" type="button"><i class="fas fa-sign-out-alt"></i> Đăng
+                            xuất</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-------------------------------------------------------------------- tab ----------------------------------------------------------------->
+        <div style="background-color: #343a40">
+            <!-- Chuc nang cua admin-->
+            <div>
+                <ul class="nav nav-tabs" id="myTab">
+                    <!-- Quan ly phim -->
+                    <li class="nav-item">
+                        <a class="nav-link active rounded-0" id="film-tab" data-toggle="tab" href="#film" role="tab"
+                            aria-controls="film" aria-selected="true">
+                            <img src="https://cdn-icons-png.flaticon.com/512/895/895924.png" height="30px" width="30px"
+                                alt="film">
+                            Phim
+                        </a>
+                    </li>
+                    <!-- Quan ly suat chieu -->
+                    <li class="nav-item">
+                        <a class="nav-link rounded-0" id="showtime-tab" data-toggle="tab" href="#showtime" role="tab"
+                            aria-controls="showtime" aria-selected="false">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3171/3171727.png" height="30px"
+                                width="30px" alt="show">
+                            Suất chiếu
+                        </a>
+                    </li>
+                    <!-- Quan ly tai khoan khach hang -->
+                    <li class="nav-item">
+                        <a class="nav-link rounded-0" id="customer-tab" data-toggle="tab" href="#customer" role="tab"
+                            aria-controls="customer" aria-selected="false">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4140/4140047.png" height="30px"
+                                width="30px" alt="customer">
+                            Khách hàng
+                        </a>
+                    </li>
+                    <!-- Thong ke -->
+                    <li class="nav-item">
+                        <a class="nav-link rounded-0" id="statistical-tab" data-toggle="tab" href="#statistical"
+                            role="tab" aria-controls="statistical" aria-selected="false">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1387/1387817.png" height="30px"
+                                width="30px" alt="statistical">
+                            Thống kê
+                        </a>
+                    </li>
+                    <!-- Cai dat/ Dang xuat/ Thong tin-->
+                    <li class="nav m-auto" style="color:aliceblue ;">
+                        Xin chào Admin đã quay trở lại!
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!----------------------------------------------------------- noi dung truy cap tung tab ----------------------------------------------------->
+        <div class="tab-content" id="myTabContent">
+            <!-- Tab quan ly phim -->
+            <div class="tab-pane fade show active" id="film">
+                <div>
+                    <div class="container-fluid">
+                        <!-- nav -->
+                        <div class="row">
+                            <div class="col-2" style="height: 100vh; background-color: rgb(232, 232, 232);">
+                                <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse">
+                                    <h5 class="text-center mt-5">Tra cứu phim</h5>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/751/751463.png"
+                                                    height="20px" width="20px" alt="search">
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </nav>
+                            </div>
+                            <div class="col-10 pt-5" id="list_items" style="background-color: white;">
+                                <div>
+                                    <button type="button" class="btn btn-light border" data-toggle="modal"
+                                        data-target="#modal-addFilm">Thêm</button>
+                                    <button type="button" class="btn btn-light border" onclick="update_movie(this)"
+                                        data-target="#modal-updateFilm">Cập nhật</button>
+                                    <button type="button" class="btn btn-light border" onclick="delete_movie(this)"
+                                        data-target="#modal-deleteFilm">Xóa</button>
+                                </div>
+                                <table class="table table-bordered mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Set</th>
+                                            <th>Mã phim</th>
+                                            <th>Tên phim</th>
+                                            <th>Đạo diễn</th>
+                                            <th>Nhà sản xuất</th>
+                                            <th>Thể loại</th>
+                                            <th>Thời lượng</th>
+                                            <th>Quốc gia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="list_movie">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    $.ajax({
+                        url: "../php/Movie/FindMovie.php",
+                        type: "GET",
+                        data: { getAll: "Checked" },
+                        success: function (data) {
+                            load_movie(data);
+                        }
+                    });
+                });
+            </script>
+            <!-- Tab quan ly suat chieu -->
+            <div class="tab-pane fade" id="showtime">
+                <div class="tab-pane fade show active" id="showtime">
+                    <div>
+                        <div class="container-fluid">
+                            <!-- nav -->
+                            <div class="row">
+                                <div class="col-2" style="height: 100vh; background-color: rgb(232, 232, 232);">
+                                    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse">
+                                        <h5 class="text-center mt-5">Tra cứu suất chiếu</h5>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Search">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-info" type="submit">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/751/751463.png"
+                                                        height="20px" width="20px" alt="search">
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </nav>
+                                </div>
+                                <div class="col-10 pt-5" id="list_items" style="background-color: white;">
+                                    <div>
+                                        <button type="button" class="btn btn-light border" data-toggle="modal"
+                                            data-target="#modal-addShowtime">Thêm</button>
+                                        <button type="button" class="btn btn-light border"
+                                            onclick="delete_show_time(this)"
+                                            data-target="#modal-deleteFilm">Xóa</button>
+                                    </div>
+                                    <table class="table table-bordered mt-3">
+                                        <thead>
+                                            <tr>
+                                                <th>Set</th>
+                                                <th>Mã suất chiếu</th>
+                                                <th>Ngày chiếu</th>
+                                                <th>Giờ chiếu</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="list_show_time">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    $.ajax({
+                        url: "../php/ShowTime/find_show_time.php",
+                        type: "GET",
+                        data: { getAll: "Checked" },
+                        success: function (data) {
+                            load_show_time(data);
+                        }
+                    });
+                });
+            </script>
+            <!-- Tab quan ly khach hang -->
+            <div class="tab-pane fade" id="customer">
+                <div class="tab-pane fade show active" id="customer">
+                    <div>
+                        <div class="container-fluid">
+                            <!-- nav -->
+                            <div class="row">
+                                <div class="col-2" style="height: 100vh; background-color: rgb(232, 232, 232);">
+                                    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse">
+                                        <h5 class="text-center mt-5">Tra cứu khách hàng</h5>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Search">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-info" type="submit">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/751/751463.png"
+                                                        height="20px" width="20px" alt="search">
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </nav>
+                                </div>
+                                <div class="col-10 pt-5" id="list_items" style="background-color: white;">
+                                    <div>
+                                        <button type="button" class="btn btn-light border"
+                                            onclick="delete_customer(this)"
+                                            data-target="#modal-deleteCustomer">Xóa</button>
+                                    </div>
+                                    <table class="table table-bordered mt-3">
+                                        <thead>
+                                            <tr>
+                                                <th>Set</th>
+                                                <th>Mã Khách hàng</th>
+                                                <th>Họ và tên</th>
+                                                <th>Địa chỉ</th>
+                                                <th>Ngày sinh</th>
+                                                <th>Email</th>
+                                                <th>Số điện thoại</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="list_customer">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    $.ajax({
+                        url: "../php/User/show_customer.php",
+                        type: "GET",
+                        data: { getAll: "Checked" },
+                        success: function (data) {
+                            load_customer(data);
+                        }
+                    });
+                });
+            </script>
+            <!-- Tab thong ke -->
+            <div class="tab-pane fade" id="statistical">
+                <div class="tab-pane fade show active" id="statistical">
+                    <div>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-2" style="height: 100vh; background-color: rgb(232, 232, 232);">
+                                    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse">
+                                        <h5 class="text-center mt-5">Bộ lọc thống kê</h5>
+                                        <div class="mb-3">
+                                            <input type="radio" class="radio" name="filter" id="w_date">
+                                            <label for="w_date">Theo ngày</label>
+                                            <input type="date" name="w_date" id="w_date" class="form-control">
+                                        </div>
+                                        <div class="mb-3">
+                                            <input type="radio" class="radio" name="filter" id="w_month">
+                                            <label for="w_month">Theo tháng</label>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label>Tháng</label>
+                                                    <select name="mnth" id="mnth" class="form-control">
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                        <option value="11">11</option>
+                                                        <option value="12">12</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-6">
+                                                    <label>Năm</label>
+                                                    <select name="mnth" id="mnth" class="form-control">
+                                                        <option value="2018">2018</option>
+                                                        <option value="2019">2019</option>
+                                                        <option value="2020">2020</option>
+                                                        <option value="2021">2021</option>
+                                                        <option value="2022">2022</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <input type="radio" class="radio" name="filter" id="w_year">
+                                            <label for="w_year">Theo năm</label>
+                                            <select name="mnth" id="mnth" class="form-control">
+                                                <option value="2018">Năm 2018</option>
+                                                <option value="2019">Năm 2019</option>
+                                                <option value="2020">Năm 2020</option>
+                                                <option value="2021">Năm 2021</option>
+                                                <option value="2022">Năm 2022</option>
+                                            </select>
+                                        </div>
+                                    </nav>
+                                </div>
+                                <div class="col-10 pt-5" id="list_items" style="background-color: white;">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-light border">Thống kê đặt vé</button>
+                                            <button type="button" class="btn btn-light border" data-toggle="modal"
+                                                data-target="#">Thống kê thu nhập</button>
+                                            <button type="button" class="btn btn-light border" data-toggle="modal"
+                                                data-target="#">Xuất file excel</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="d-flex justify-content-end">
+                                                <h6 id="numberOfReceipt"> Tổng số:</h6>
+                                            </div>
+                                            <div class="d-flex justify-content-end">
+                                                <h6 id="totalPrice"> Tổng tiền: </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered mt-3">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã Hóa Đơn</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Ngày lập</th>
+                                                <th>Mã vé</th>
+                                                <th>Mã khách hàng</th>
+                                                <th>Mã phim</th>
+                                                <th>Số lượng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="list_receipt">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $.ajax({
+                    url: "../php/Receipt/show_receipt.php",
+                    type: "GET",
+                    data: { getAll: "Checked" },
+                    success: function (data) {
+                        load_receipt(data);
+                    }
+                });
+            });
+        </script>
+        <!------------------------------------------------------------------ Cac model ------------------------------------------------------------------>
+        <!-- modal them phim -->
+        <div class="modal fade" id="modal-addFilm" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form action="../php/Movie/Add_movie.php" method="post" enctype="multipart/form-data">
+                        <!-- Modal Header -->
+                        <div class="modal-header row">
+                            <div class="col-3">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2281/2281232.png" alt="film"
+                                    width="100%" height="100%">
+                            </div>
+                            <div class="col-6 text-center mt-3">
+                                <h2 class="modal-title ">THÊM PHIM MỚI</h2>
+                                <p>Nhập đầy đủ thông tin phim</p>
+                            </div>
+                            <div class="col-3">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-6">
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Poster</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="posterIMG"
+                                                name="posterIMG">
+                                            <label class="custom-file-label" for="posterIMG">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="movieName">Tên phim</label>
+                                        <input type="movieName" name="movieName" id="movieName" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="director">Đạo diễn</label>
+                                        <input type="text" name="director" id="director" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="producer">Nhà sản xuất</label>
+                                        <input type="text" name="producer" id="producer" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="actor">Diễn viên</label>
+                                        <input type="text" name="actor" id="actor" class="form-control">
+                                    </div>
+
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <div class="custom-file">
+                                            <label class="form-label" for="Trailer">Trailer</label>
+                                            <input type="text" name="Trailer" id="Trailer" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="Category">Thể loại</label>
+                                        <select name="Category" class="form-control" id="Category">
+                                            <option value="Hành động">Hành động</option>
+                                            <option value="Tình cảm">Tình cảm</option>
+                                            <option value="Hài hước">Hài hước</option>
+                                            <option value="Viễn tưởng">Viễn tưởng</option>
+                                            <option value="Trinh thám">Trinh thám</option>
+                                            <option value="Hoạt hình">Hoạt hình</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="time">Thời lượng</label>
+                                        <input type="text" name="time" id="time" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="nation">Quốc gia</label>
+                                        <input type="text" name="nation" id="nation" class="form-control">
+                                    </div>
+
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="day">Ngày khởi chiếu</label>
+                                        <input type="date" name="day" id="day" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="summary">Tóm tắt thông tin phim</label>
+                                <textarea name="summary" class="form-control" rows="4" id="summary"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-primary" value="Reset">Reset</button>
+                            <button type="submit" class="btn btn-danger">Add Movie</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal cap nhat phim -->
+        <div class="modal fade" id="modal-updateFilm" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form action="../php/Movie/update_movie.php" method="post" enctype="multipart/form-data">
+                        <!-- Modal Header -->
+                        <div class="modal-header row">
+                            <div class="col-3">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2281/2281232.png" alt="film"
+                                    width="100%" height="100%">
+                            </div>
+                            <div class="col-6 text-center mt-3">
+                                <h2 class="modal-title ">CẬP NHẬT PHIM</h2>
+                                <p>Nhập đầy đủ thông tin phim</p>
+                            </div>
+                            <div class="col-3">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="hidden" id="id_movie" name="id_movie">
+                                    <div class="mb-3">
+                                        <label class="form-label">Poster</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="posterIMG"
+                                                name="posterIMG">
+                                            <label class="custom-file-label" for="posterIMG">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="movieName">Tên phim</label>
+                                        <input type="movieName" name="movieName" id="movieName" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="director">Đạo diễn</label>
+                                        <input type="text" name="director" id="director" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="producer">Nhà sản xuất</label>
+                                        <input type="text" name="producer" id="producer" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="actor">Diễn viên</label>
+                                        <input type="text" name="actor" id="actor" class="form-control">
+                                    </div>
+
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <div class="custom-file">
+                                            <label class="form-label" for="Trailer">Trailer</label>
+                                            <input type="text" name="Trailer" id="Trailer" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="Category">Thể loại</label>
+                                        <select name="Category" class="form-control" id="Category">
+                                            <option value="Hành động">Hành động</option>
+                                            <option value="Tình cảm">Tình cảm</option>
+                                            <option value="Hài hước">Hài hước</option>
+                                            <option value="Viễn tưởng">Viễn tưởng</option>
+                                            <option value="Trinh thám">Trinh thám</option>
+                                            <option value="Hoạt hình">Hoạt hình</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="time">Thời lượng</label>
+                                        <input type="text" name="time" id="time" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="nation">Quốc gia</label>
+                                        <input type="text" name="nation" id="nation" class="form-control">
+                                    </div>
+
+                                    <div class="form-group mb-3" style="width: 100%;">
+                                        <label class="form-label" for="day">Ngày khởi chiếu</label>
+                                        <input type="date" name="day" id="day" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="summary">Tóm tắt thông tin phim</label>
+                                <textarea name="summary" class="form-control" rows="4" id="summary"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-primary" value="Reset">Reset</button>
+                            <button type="submit" class="btn btn-danger">Add Movie</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Model Xoa phim -->
+        <div class="modal fade" id="modal-deleteFilm" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <div class="m-auto">
+                            <h4 class="modal-title ">Bạn chắc chắn muốn xóa bộ phim này?</h4>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3221/3221897.png" alt="delete" height="30%"
+                                width="30%">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-primary" value="Reset">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn_delete_movie">Delete Movie</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Model show time -->
+        <!-- Model them suat chieu -->
+        <div class="modal fade" id="modal-addShowtime" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <form action="../php/ShowTime/add_show_time.php" method="post" enctype="multipart/form-data">
+                        <!-- Modal Header -->
+                        <div class="modal-header row">
+                            <div class="col-3">
+                                <img src="https://cdn-icons-png.flaticon.com/512/4221/4221484.png" alt="show-time"
+                                    width="100%" height="100%">
+                            </div>
+                            <div class="col-8 text-center mt-3">
+                                <h4 class="modal-title ">THÊM SUẤT CHIẾU MỚI</h4>
+                                <p>Nhập đầy đủ thông tin suất chiếu</p>
+                            </div>
+                            <div class="col-1">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="form-group mb-3" style="width: 100%;">
+                                <label class="form-label" for="day-show">Ngày chiếu</label>
+                                <input type="date" name="day-show" id="day-show" class="form-control">
+                            </div>
+
+                            <div class="form-group mb-3" style="width: 100%;">
+                                <label class="form-label" for="time-show">Giờ chiếu</label>
+                                <input type="time" name="time-show" id="time-show" class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-primary" value="Reset">Reset</button>
+                            <button type="submit" class="btn btn-danger">Add</button>
+                        </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <!-- Model Xoa suat chieu -->
+        <div class="modal fade" id="modal-deleteShowtime" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <div class="m-auto">
+                            <h4 class="modal-title ">Bạn chắc chắn muốn xóa bộ phim này?</h4>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3221/3221897.png" alt="delete" height="30%"
+                                width="30%">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-primary" value="Reset">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn_delete_show_time">Delete</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Model xoa khach hang -->
+        <div class="modal fade" id="modal-deleteCustomer" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <div class="m-auto">
+                            <h4 class="modal-title ">Bạn chắc chắn muốn xóa tài khoản này?</h4>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3221/3221897.png" alt="delete" height="30%"
+                                width="30%">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-primary" value="Reset">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn_delete_customer">Delete</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <footer class="flex-shrink-0 py-2 bg-dark text-white mt-3">
+        <div class="container text-center">
+            <p>Copyright &copy HAY cinema</p>
+        </div>
+    </footer>
+
+    <script>
+        // Manage movie
+        function delete_movie(x) {
+            var list = [];
+            for (let i = 0; i < document.getElementById("list_movie").children.length; i++) {
+                if (document.getElementById("list_movie").children[i].children[0].children[0].checked) {
+                    list.push(document.getElementById("list_movie").children[i].children[1].innerText);
+                }
+            }
+            if (list.length == 0) {
+                alert("PLease chose some movie before delete");
+                x.preventDefault();
+            } else {
+                $('#modal-deleteFilm').modal('show');
+                $(".btn_delete_movie").off("click");
+                $(".btn_delete_movie").click(function (event) {
+                    var jsonString = JSON.stringify(list);
+                    $.ajax({
+                        type: "POST",
+                        url: "../php/Movie/delete_movie.php",
+                        data: { maSp: jsonString },
+                        cache: false,
+                        success: function (data) {
+                            location.reload();
+                        }
+                    });
+                });
+            }
+        }
+        function update_movie(x) {
+            var list = [];
+            for (let i = 0; i < document.getElementById("list_movie").children.length; i++) {
+                if (document.getElementById("list_movie").children[i].children[0].children[0].checked) {
+                    list.push(document.getElementById("list_movie").children[i].children[1].innerText);
+                }
+            }
+            if (list.length != 1) {
+                alert("PLease chose one movie to update");
+                x.preventDefault();
+            } else {
+                $('#modal-updateFilm').modal('show');
+                $("#id_movie").val(list[0]);
+            }
+        }
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+        function load_movie(list_movie) {
+            const ls = JSON.parse(list_movie);
+            let num_movie = ls.length;
+            var parent = document.getElementById("list_movie");
+            for (let i = 0; i < num_movie; i++) {
+                let tr = document.createElement("tr");
+                parent.appendChild(tr);
+                for (let j = 0; j < 8; j++) {
+                    let td = document.createElement("td");
+                    if (j == 0) {
+                        let input = document.createElement("input");
+                        input.type = "checkbox";
+                        td.appendChild(input);
+                    } else if (j == 1) {
+                        td.innerText = ls[i][0];
+                    } else if (j == 2) {
+                        td.innerText = ls[i][1];
+                    }
+                    else if (j == 3) {
+                        td.innerText = ls[i][2];
+                    }
+                    else if (j == 4) {
+                        td.innerText = ls[i][3];
+                    }
+                    else if (j == 5) {
+                        td.innerText = ls[i][8];
+                    }
+                    else if (j == 6) {
+                        td.innerText = ls[i][7];
+                    }
+                    else if (j == 7) {
+                        td.innerText = ls[i][4];
+                    }
+                    tr.appendChild(td);
+                }
+
+            }
+        }
+
+        // Manage Show Time
+        function load_show_time(list_show_time) {
+            const ls = JSON.parse(list_show_time);
+            let num_show_time = ls.length;
+            var parent = document.getElementById("list_show_time");
+            for (let i = 0; i < num_show_time; i++) {
+                let tr = document.createElement("tr");
+                parent.appendChild(tr);
+                for (let j = 0; j < 4; j++) {
+                    let td = document.createElement("td");
+                    if (j == 0) {
+                        let input = document.createElement("input");
+                        input.type = "checkbox";
+                        td.appendChild(input);
+                    } else if (j == 1) {
+                        td.innerText = ls[i][0];
+                    } else if (j == 2) {
+                        td.innerText = ls[i][1];
+                    }
+                    else if (j == 3) {
+                        td.innerText = ls[i][2];
+                    }
+                    tr.appendChild(td);
+                }
+
+            }
+        }
+        function delete_show_time(x) {
+            var list = [];
+            for (let i = 0; i < document.getElementById("list_show_time").children.length; i++) {
+                if (document.getElementById("list_show_time").children[i].children[0].children[0].checked) {
+                    list.push(document.getElementById("list_show_time").children[i].children[1].innerText);
+                }
+            }
+            if (list.length == 0) {
+                alert("PLease chose some show time before delete");
+                x.preventDefault();
+            } else {
+                $('#modal-deleteShowtime').modal('show');
+                $(".btn_delete_show_time").off("click");
+                $(".btn_delete_show_time").click(function (event) {
+                    var jsonString = JSON.stringify(list);
+                    $.ajax({
+                        type: "POST",
+                        url: "../php/ShowTime/delete_show_time.php",
+                        data: { maSp: jsonString },
+                        cache: false,
+                        success: function (data) {
+                            location.reload();
+                        }
+                    });
+                });
+            }
+        }
+
+        // Manager Customer
+        function load_customer(list_customer) {
+            const ls = JSON.parse(list_customer);
+            let num_customer = ls.length;
+            var parent = document.getElementById("list_customer");
+            for (let i = 0; i < num_customer; i++) {
+                let tr = document.createElement("tr");
+                parent.appendChild(tr);
+                for (let j = 0; j < 7; j++) {
+                    let td = document.createElement("td");
+                    if (j == 0) {
+                        let input = document.createElement("input");
+                        input.type = "checkbox";
+                        td.appendChild(input);
+                    } else if (j == 1) {
+                        td.innerText = ls[i][0];
+                    } else if (j == 2) {
+                        td.innerText = ls[i][1];
+                    }
+                    else if (j == 3) {
+                        td.innerText = ls[i][2];
+                    }
+                    else if (j == 4) {
+                        td.innerText = ls[i][3];
+                    }
+                    else if (j == 5) {
+                        td.innerText = ls[i][4];
+                    }
+                    else if (j == 6) {
+                        td.innerText = ls[i][5];
+                    }
+                    tr.appendChild(td);
+                }
+
+            }
+        }
+        function delete_customer(x) {
+            var list = [];
+            for (let i = 0; i < document.getElementById("list_customer").children.length; i++) {
+                if (document.getElementById("list_customer").children[i].children[0].children[0].checked) {
+                    list.push(document.getElementById("list_customer").children[i].children[1].innerText);
+                }
+            }
+            if (list.length == 0) {
+                alert("PLease chose some customer before delete");
+                x.preventDefault();
+            } else {
+                $('#modal-deleteCustomer').modal('show');
+                $(".btn_delete_customer").off("click");
+                $(".btn_delete_customer").click(function (event) {
+                    var jsonString = JSON.stringify(list);
+                    $.ajax({
+                        type: "POST",
+                        url: "../php/User/delete_customer.php",
+                        data: { maSp: jsonString },
+                        cache: false,
+                        success: function (data) {
+                            location.reload();
+                        }
+                    });
+                });
+            }
+        }
+
+        //Manage Receipt
+        function load_receipt(list_receipt) {
+            const ls = JSON.parse(list_receipt);
+            let num_receipt = ls.length;
+            let total = 0;
+            let numReceipt = document.getElementById("numberOfReceipt");
+            numReceipt.innerHTML = "Tổng số: " + num_receipt;
+            var parent = document.getElementById("list_receipt");
+            for (let i = 0; i < num_receipt; i++) {
+                let tr = document.createElement("tr");
+                parent.appendChild(tr);
+                for (let j = 0; j < 7; j++) {
+                    let td = document.createElement("td");
+                    if (j == 0) {
+                        td.innerText = ls[i][0];
+                    } else if (j == 1) {
+                        td.innerText = (new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })).format(ls[i][1]);
+                        total = total + parseInt(ls[i][1]);
+                    } else if (j == 2) {
+                        td.innerText = ls[i][2];
+                    } else if (j == 3) {
+                        td.innerText = ls[i][3];
+                    } else if (j == 4) {
+                        td.innerText = ls[i][4];
+                    } else if (j == 5) {
+                        td.innerText = ls[i][5];
+                    } else if (j == 6) {
+                        td.innerText = ls[i][6];
+                    }
+
+                    tr.appendChild(td);
+                }
+            }
+            let totalMoney = document.getElementById("totalPrice");
+            totalMoney.innerHTML = "Tổng tiền: " + (new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })).format(total);
+        }
+
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+
+</body>
+
+<style>
+    .nav-item {
+        width: 16.6666%;
+        text-align: center;
+    }
+
+    .nav-link {
+        border-radius: 0;
+        color: rgb(255, 255, 255);
+    }
+
+    .nav-link:hover {
+        background-color: #60776f;
+        color: white;
+    }
+</style>
+
+</html>
